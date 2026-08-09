@@ -11,7 +11,7 @@ export const API_BASE_URL =
 
 export class ApiError extends Error {
   status: number;
-  errors?: GenerateError[];
+  errors?: GenerateError[] | undefined;
   constructor(status: number, message: string, errors?: GenerateError[]) {
     super(message);
     this.name = "ApiError";
