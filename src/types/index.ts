@@ -27,8 +27,8 @@ export interface MappingRule {
   destination: string;
   sources: string[];
   operation: Operation;
-  formula?: string | null;
-  options?: Record<string, unknown>;
+  formula?: string | null | undefined;
+  options?: Record<string, unknown> | undefined;
 }
 
 export interface TemplateSummary {
