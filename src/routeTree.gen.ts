@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TemplatesRouteImport } from './routes/templates'
 import { Route as UploadTemplateIdRouteImport } from './routes/upload.$templateId'
+import { Route as MappingTemplateIdUploadIdRouteImport } from './routes/mapping.$templateId.$uploadId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -28,35 +29,58 @@ const UploadTemplateIdRoute = UploadTemplateIdRouteImport.update({
   path: '/upload/$templateId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MappingTemplateIdUploadIdRoute =
+  MappingTemplateIdUploadIdRouteImport.update({
+    id: '/mapping/$templateId/$uploadId',
+    path: '/mapping/$templateId/$uploadId',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/templates': typeof TemplatesRoute
   '/upload/$templateId': typeof UploadTemplateIdRoute
+  '/mapping/$templateId/$uploadId': typeof MappingTemplateIdUploadIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/templates': typeof TemplatesRoute
   '/upload/$templateId': typeof UploadTemplateIdRoute
+  '/mapping/$templateId/$uploadId': typeof MappingTemplateIdUploadIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/templates': typeof TemplatesRoute
   '/upload/$templateId': typeof UploadTemplateIdRoute
+  '/mapping/$templateId/$uploadId': typeof MappingTemplateIdUploadIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/templates' | '/upload/$templateId'
+  fullPaths:
+    | '/'
+    | '/templates'
+    | '/upload/$templateId'
+    | '/mapping/$templateId/$uploadId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/templates' | '/upload/$templateId'
-  id: '__root__' | '/' | '/templates' | '/upload/$templateId'
+  to:
+    | '/'
+    | '/templates'
+    | '/upload/$templateId'
+    | '/mapping/$templateId/$uploadId'
+  id:
+    | '__root__'
+    | '/'
+    | '/templates'
+    | '/upload/$templateId'
+    | '/mapping/$templateId/$uploadId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   TemplatesRoute: typeof TemplatesRoute
   UploadTemplateIdRoute: typeof UploadTemplateIdRoute
+  MappingTemplateIdUploadIdRoute: typeof MappingTemplateIdUploadIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -82,6 +106,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UploadTemplateIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/mapping/$templateId/$uploadId': {
+      id: '/mapping/$templateId/$uploadId'
+      path: '/mapping/$templateId/$uploadId'
+      fullPath: '/mapping/$templateId/$uploadId'
+      preLoaderRoute: typeof MappingTemplateIdUploadIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -89,6 +120,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   TemplatesRoute: TemplatesRoute,
   UploadTemplateIdRoute: UploadTemplateIdRoute,
+  MappingTemplateIdUploadIdRoute: MappingTemplateIdUploadIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
