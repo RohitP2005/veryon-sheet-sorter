@@ -10,6 +10,11 @@ lerna-debug.log*
 # bun.lock is the canonical lockfile; ignore npm's to avoid a mixed-lockfile setup
 package-lock.json
 
+# Local env overrides (.env.example stays tracked as documentation)
+.env
+.env.local
+.env.*.local
+
 node_modules
 dist
 dist-ssr
