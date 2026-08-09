@@ -80,13 +80,13 @@ TECH STACK (use exactly this, do not substitute defaults):
 
 APP FLOW (linear 4-step wizard with a black-and-yellow ProgressStepper at the top of every step):
 
-1. Choose Template  → route /templates
+1. Choose Template → route /templates
 
-2. Upload Excel     → route /upload/:templateId
+2. Upload Excel → route /upload/:templateId
 
-3. Mapping Screen   → route /mapping/:templateId/:uploadId
+3. Mapping Screen → route /mapping/:templateId/:uploadId
 
-4. Download         → route /download/:jobId
+4. Download → route /download/:jobId
 
 STEP 1 — Choose Template (/templates)
 
@@ -192,11 +192,11 @@ STEP 4 — Generate & Download
 
   {
 
-    "template_id": string,
+  "template_id": string,
 
-    "upload_id": string,
+  "upload_id": string,
 
-    "mappings": [
+  "mappings": [
 
       {
 
@@ -212,7 +212,7 @@ STEP 4 — Generate & Download
 
       }
 
-    ]
+  ]
 
   }
 
@@ -256,39 +256,39 @@ FOLDER STRUCTURE
 
 src/
 
-├── components/   (TemplateCard, UploadBox, PreviewGrid, MappingRow, FormulaEditor,
+├── components/ (TemplateCard, UploadBox, PreviewGrid, MappingRow, FormulaEditor,
 
-│                  ProgressStepper, DownloadCard)
+│ ProgressStepper, DownloadCard)
 
-├── pages/        (ChooseTemplate, UploadExcel, Mapping, Download — route components)
+├── pages/ (ChooseTemplate, UploadExcel, Mapping, Download — route components)
 
-├── routes/       (TanStack Router route tree)
+├── routes/ (TanStack Router route tree)
 
-├── hooks/        (useTemplates, useUpload, useGenerate, useMappingValidation)
+├── hooks/ (useTemplates, useUpload, useGenerate, useMappingValidation)
 
-├── api/          (typed fetch client + endpoint functions used by TanStack Query)
+├── api/ (typed fetch client + endpoint functions used by TanStack Query)
 
-├── store/        (Zustand store)
+├── store/ (Zustand store)
 
-└── types/        (MappingRule, Operation, Template, UploadResult types — mirrored below)
+└── types/ (MappingRule, Operation, Template, UploadResult types — mirrored below)
 
 TYPES (define these exactly in src/types/):
 
 type Operation = "copy" | "trim" | "uppercase" | "lowercase" | "concatenate" | "multiply"
 
-  | "formula" | "replace" | "date_format" | "constant";
+| "formula" | "replace" | "date_format" | "constant";
 
 interface MappingRule {
 
-  destination: string;
+destination: string;
 
-  sources: string[];
+sources: string[];
 
-  operation: Operation;
+operation: Operation;
 
-  formula?: string | null;
+formula?: string | null;
 
-  options?: Record<string, unknown>;
+options?: Record<string, unknown>;
 
 }
 
@@ -296,25 +296,25 @@ interface TemplateSummary { id: string; name: string; description: string; sheet
 
 interface TemplateDetail extends TemplateSummary {
 
-  columns: string[];
+columns: string[];
 
-  required_columns: string[];
+required_columns: string[];
 
-  output_format: Record<string, unknown>;
+output_format: Record<string, unknown>;
 
 }
 
 interface UploadResponse {
 
-  upload_id: string;
+upload_id: string;
 
-  file_name: string;
+file_name: string;
 
-  columns: string[];
+columns: string[];
 
-  sample_rows: Record<string, unknown>[];
+sample_rows: Record<string, unknown>[];
 
-  row_count: number;
+row_count: number;
 
 }
 

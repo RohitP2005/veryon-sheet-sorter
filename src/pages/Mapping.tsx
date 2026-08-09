@@ -35,10 +35,7 @@ export function Mapping() {
   const [serverErrors, setServerErrors] = useState<GenerateError[] | null>(null);
 
   const uploadColumns = useMemo(() => upload?.columns ?? [], [upload]);
-  const requiredColumns = useMemo(
-    () => template.data?.required_columns ?? [],
-    [template.data],
-  );
+  const requiredColumns = useMemo(() => template.data?.required_columns ?? [], [template.data]);
 
   useEffect(() => {
     if (!template.data) return;
@@ -141,7 +138,8 @@ export function Mapping() {
         <div>
           <h1 className="text-3xl font-extrabold tracking-tight">Map your columns</h1>
           <p className="mt-2 text-muted-foreground">
-            {template.data?.name} · source file <span className="font-medium">{upload.file_name}</span>
+            {template.data?.name} · source file{" "}
+            <span className="font-medium">{upload.file_name}</span>
           </p>
         </div>
         <Button

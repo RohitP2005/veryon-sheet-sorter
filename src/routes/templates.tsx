@@ -7,8 +7,7 @@ export const Route = createFileRoute("/templates")({
       { title: "Choose Template | Veryon Excel Transformation Tool" },
       {
         name: "description",
-        content:
-          "Select an output template to transform your customer Excel workbook with Veryon.",
+        content: "Select an output template to transform your customer Excel workbook with Veryon.",
       },
       { property: "og:title", content: "Choose Template | Veryon Excel Transformation Tool" },
       {

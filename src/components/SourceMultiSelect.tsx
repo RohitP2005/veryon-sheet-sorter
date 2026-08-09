@@ -29,7 +29,9 @@ export function SourceMultiSelect({
             className="w-full justify-between font-normal"
           >
             <span className="truncate">
-              {value.length ? `${value.length} column${value.length > 1 ? "s" : ""}` : "Select source columns"}
+              {value.length
+                ? `${value.length} column${value.length > 1 ? "s" : ""}`
+                : "Select source columns"}
             </span>
             <ChevronDown className="size-4 opacity-60" />
           </Button>

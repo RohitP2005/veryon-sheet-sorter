@@ -7,6 +7,9 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# bun.lock is the canonical lockfile; ignore npm's to avoid a mixed-lockfile setup
+package-lock.json
+
 node_modules
 dist
 dist-ssr

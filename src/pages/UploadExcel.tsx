@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useParams, Link } from "@tanstack/react-router";
-import { AlertCircle, ArrowRight } from "lucide-react";
+import { AlertCircle, ArrowRight, Download } from "lucide-react";
 import { WizardLayout } from "@/components/AppHeader";
 import { UploadBox } from "@/components/UploadBox";
 import { PreviewGrid } from "@/components/PreviewGrid";
@@ -10,6 +10,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useTemplate } from "@/hooks/useTemplates";
 import { useUpload, validateExcelFile } from "@/hooks/useUpload";
 import { useWizardStore } from "@/store/wizard";
+import { getSampleFileUrl } from "@/lib/sampleFiles";
 import type { UploadResponse } from "@/types";
 
 export function UploadExcel() {
@@ -38,6 +39,7 @@ export function UploadExcel() {
   }
 
   const apiError = upload.error?.message ?? null;
+  const sampleUrl = getSampleFileUrl(templateId);
 
   return (
     <WizardLayout step={2}>
@@ -45,6 +47,15 @@ export function UploadExcel() {
       <p className="mt-2 max-w-2xl text-muted-foreground">
         Upload the customer workbook (.xlsx, max 10MB). We'll detect its columns for mapping.
       </p>
+      {sampleUrl && (
+        <a
+          href={sampleUrl}
+          download
+          className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-brand-black underline decoration-brand-yellow decoration-2 underline-offset-4 hover:text-brand-yellow"
+        >
+          <Download className="size-4" /> Don't have a file handy? Download a sample workbook
+        </a>
+      )}
 
       <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_320px]">
         <div className="space-y-4">

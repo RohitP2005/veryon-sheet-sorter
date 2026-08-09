@@ -79,16 +79,16 @@ export function MappingRow({
                   formula: operation === "formula" ? (rule.formula ?? "") : null,
                   options:
                     operation === "concatenate"
-                      ? { separator: (options['separator'] as string) ?? " " }
+                      ? { separator: (options["separator"] as string) ?? " " }
                       : operation === "date_format"
-                        ? { format: (options['format'] as string) ?? "%Y-%m-%d" }
+                        ? { format: (options["format"] as string) ?? "%Y-%m-%d" }
                         : operation === "replace"
                           ? {
-                              find: (options['find'] as string) ?? "",
-                              replace: (options['replace'] as string) ?? "",
+                              find: (options["find"] as string) ?? "",
+                              replace: (options["replace"] as string) ?? "",
                             }
                           : operation === "constant"
-                            ? { value: (options['value'] as string) ?? "" }
+                            ? { value: (options["value"] as string) ?? "" }
                             : {},
                 })
               }
@@ -113,7 +113,7 @@ export function MappingRow({
           <Label className="text-xs uppercase tracking-wide text-muted-foreground">Separator</Label>
           <Input
             className="mt-1.5"
-            value={(options['separator'] as string) ?? " "}
+            value={(options["separator"] as string) ?? " "}
             onChange={(e) => setOption("separator", e.target.value)}
           />
         </div>
@@ -125,7 +125,7 @@ export function MappingRow({
             <Label className="text-xs uppercase tracking-wide text-muted-foreground">Find</Label>
             <Input
               className="mt-1.5"
-              value={(options['find'] as string) ?? ""}
+              value={(options["find"] as string) ?? ""}
               onChange={(e) => setOption("find", e.target.value)}
             />
           </div>
@@ -133,7 +133,7 @@ export function MappingRow({
             <Label className="text-xs uppercase tracking-wide text-muted-foreground">Replace</Label>
             <Input
               className="mt-1.5"
-              value={(options['replace'] as string) ?? ""}
+              value={(options["replace"] as string) ?? ""}
               onChange={(e) => setOption("replace", e.target.value)}
             />
           </div>
@@ -147,7 +147,7 @@ export function MappingRow({
           </Label>
           <Input
             className="mt-1.5"
-            value={(options['format'] as string) ?? "%Y-%m-%d"}
+            value={(options["format"] as string) ?? "%Y-%m-%d"}
             onChange={(e) => setOption("format", e.target.value)}
           />
         </div>
@@ -158,7 +158,7 @@ export function MappingRow({
           <Label className="text-xs uppercase tracking-wide text-muted-foreground">Value</Label>
           <Input
             className="mt-1.5"
-            value={(options['value'] as string) ?? ""}
+            value={(options["value"] as string) ?? ""}
             onChange={(e) => setOption("value", e.target.value)}
           />
         </div>

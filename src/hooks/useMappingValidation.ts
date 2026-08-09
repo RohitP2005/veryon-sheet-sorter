@@ -33,7 +33,7 @@ export function useMappingValidation(
 
       switch (rule.operation) {
         case "constant":
-          if (!String(opts['value'] ?? "").length) errors.push("Constant value is required.");
+          if (!String(opts["value"] ?? "").length) errors.push("Constant value is required.");
           break;
         case "concatenate":
           if (rule.sources.length < 2)
@@ -56,11 +56,11 @@ export function useMappingValidation(
           break;
         }
         case "replace":
-          if (!String(opts['find'] ?? "").length) errors.push('"Find" value is required.');
+          if (!String(opts["find"] ?? "").length) errors.push('"Find" value is required.');
           if (rule.sources.length < 1) errors.push("Select at least 1 source column.");
           break;
         case "date_format":
-          if (!String(opts['format'] ?? "").length) errors.push("Date format is required.");
+          if (!String(opts["format"] ?? "").length) errors.push("Date format is required.");
           if (rule.sources.length < 1) errors.push("Select at least 1 source column.");
           break;
         default:
