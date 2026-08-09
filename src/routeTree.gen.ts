@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TemplatesRouteImport } from './routes/templates'
+import { Route as DownloadJobIdRouteImport } from './routes/download.$jobId'
 import { Route as UploadTemplateIdRouteImport } from './routes/upload.$templateId'
 import { Route as MappingTemplateIdUploadIdRouteImport } from './routes/mapping.$templateId.$uploadId'
 
@@ -22,6 +23,11 @@ const IndexRoute = IndexRouteImport.update({
 const TemplatesRoute = TemplatesRouteImport.update({
   id: '/templates',
   path: '/templates',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DownloadJobIdRoute = DownloadJobIdRouteImport.update({
+  id: '/download/$jobId',
+  path: '/download/$jobId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const UploadTemplateIdRoute = UploadTemplateIdRouteImport.update({
@@ -39,12 +45,14 @@ const MappingTemplateIdUploadIdRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/templates': typeof TemplatesRoute
+  '/download/$jobId': typeof DownloadJobIdRoute
   '/upload/$templateId': typeof UploadTemplateIdRoute
   '/mapping/$templateId/$uploadId': typeof MappingTemplateIdUploadIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/templates': typeof TemplatesRoute
+  '/download/$jobId': typeof DownloadJobIdRoute
   '/upload/$templateId': typeof UploadTemplateIdRoute
   '/mapping/$templateId/$uploadId': typeof MappingTemplateIdUploadIdRoute
 }
@@ -52,6 +60,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/templates': typeof TemplatesRoute
+  '/download/$jobId': typeof DownloadJobIdRoute
   '/upload/$templateId': typeof UploadTemplateIdRoute
   '/mapping/$templateId/$uploadId': typeof MappingTemplateIdUploadIdRoute
 }
@@ -60,18 +69,21 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/templates'
+    | '/download/$jobId'
     | '/upload/$templateId'
     | '/mapping/$templateId/$uploadId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/templates'
+    | '/download/$jobId'
     | '/upload/$templateId'
     | '/mapping/$templateId/$uploadId'
   id:
     | '__root__'
     | '/'
     | '/templates'
+    | '/download/$jobId'
     | '/upload/$templateId'
     | '/mapping/$templateId/$uploadId'
   fileRoutesById: FileRoutesById
@@ -79,6 +91,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   TemplatesRoute: typeof TemplatesRoute
+  DownloadJobIdRoute: typeof DownloadJobIdRoute
   UploadTemplateIdRoute: typeof UploadTemplateIdRoute
   MappingTemplateIdUploadIdRoute: typeof MappingTemplateIdUploadIdRoute
 }
@@ -97,6 +110,13 @@ declare module '@tanstack/react-router' {
       path: '/templates'
       fullPath: '/templates'
       preLoaderRoute: typeof TemplatesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/download/$jobId': {
+      id: '/download/$jobId'
+      path: '/download/$jobId'
+      fullPath: '/download/$jobId'
+      preLoaderRoute: typeof DownloadJobIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/upload/$templateId': {
@@ -119,6 +139,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   TemplatesRoute: TemplatesRoute,
+  DownloadJobIdRoute: DownloadJobIdRoute,
   UploadTemplateIdRoute: UploadTemplateIdRoute,
   MappingTemplateIdUploadIdRoute: MappingTemplateIdUploadIdRoute,
 }
