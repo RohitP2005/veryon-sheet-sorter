@@ -12,7 +12,10 @@ export default function MonacoFormulaEditor({
   function handleMount(monaco: Monaco) {
     monaco.languages.registerCompletionItemProvider("plaintext", {
       triggerCharacters: ["{"],
-      provideCompletionItems: (model, position) => {
+      provideCompletionItems: (
+        model: import("monaco-editor").editor.ITextModel,
+        position: import("monaco-editor").Position,
+      ) => {
         const word = model.getWordUntilPosition(position);
         const range = {
           startLineNumber: position.lineNumber,
