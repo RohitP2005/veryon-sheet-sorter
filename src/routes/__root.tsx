@@ -78,14 +78,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Veryon | Excel Transformation Tool" },
+      { title: "Veryon - Tracking +" },
       {
         name: "description",
         content:
           "Veryon Excel Transformation Tool — map customer workbooks to Veryon templates and generate output files.",
       },
       { name: "author", content: "Veryon" },
-      { property: "og:title", content: "Veryon | Excel Transformation Tool" },
+      { property: "og:title", content: "Veryon - Tracking +" },
       {
         property: "og:description",
         content: "Map customer workbooks to Veryon templates and generate output files.",
