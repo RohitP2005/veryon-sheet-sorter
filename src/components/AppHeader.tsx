@@ -10,7 +10,7 @@ export function AppHeader({ step }: { step: 1 | 2 | 3 | 4 }) {
             Very<span className="text-brand-yellow">on</span>
           </span>
           <span className="text-xs font-medium uppercase tracking-widest text-white/60">
-            Excel Transformation Tool
+            Tracking + Excel Transformation Tool
           </span>
         </Link>
       </div>
