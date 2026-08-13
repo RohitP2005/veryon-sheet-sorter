@@ -1,29 +1,40 @@
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, Sigma } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
 import { SourceMultiSelect } from "./SourceMultiSelect";
 import { FormulaEditor } from "./FormulaEditor";
-import { OPERATIONS, type MappingRule, type Operation } from "@/types";
+import { SaveFormulaDialog } from "./SaveFormulaDialog";
+import { OPERATIONS, type MappingRule, type Operation, type SavedFormula } from "@/types";
+
+const SAVED_FORMULA_PREFIX = "saved:";
 
 export function MappingRow({
   rule,
   uploadColumns,
   required,
   errors,
+  savedFormulas,
+  onSaveFormula,
+  isSavingFormula,
   onChange,
 }: {
   rule: MappingRule;
   uploadColumns: string[];
   required: boolean;
   errors: string[];
+  savedFormulas: SavedFormula[];
+  onSaveFormula: (name: string, description: string) => void;
+  isSavingFormula?: boolean;
   onChange: (next: MappingRule) => void;
 }) {
   const options = rule.options ?? {};
@@ -71,10 +82,25 @@ export function MappingRow({
           <div className="mt-1.5">
             <Select
               value={rule.operation}
-              onValueChange={(operation) =>
+              onValueChange={(value) => {
+                if (value.startsWith(SAVED_FORMULA_PREFIX)) {
+                  const saved = savedFormulas.find(
+                    (f) => f.id === value.slice(SAVED_FORMULA_PREFIX.length),
+                  );
+                  if (saved) {
+                    onChange({
+                      ...rule,
+                      operation: "formula",
+                      formula: saved.formula,
+                      options: {},
+                    });
+                  }
+                  return;
+                }
+                const operation = value as Operation;
                 onChange({
                   ...rule,
-                  operation: operation as Operation,
+                  operation,
                   sources: operation === "constant" ? [] : rule.sources,
                   formula: operation === "formula" ? (rule.formula ?? "") : null,
                   options:
@@ -90,18 +116,32 @@ export function MappingRow({
                           : operation === "constant"
                             ? { value: (options["value"] as string) ?? "" }
                             : {},
-                })
-              }
+                });
+              }}
             >
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {OPERATIONS.map((op) => (
-                  <SelectItem key={op} value={op}>
-                    {op}
-                  </SelectItem>
-                ))}
+                <SelectGroup>
+                  <SelectLabel>Operations</SelectLabel>
+                  {OPERATIONS.map((op) => (
+                    <SelectItem key={op} value={op}>
+                      {op}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+                {savedFormulas.length > 0 && (
+                  <SelectGroup>
+                    <SelectLabel>Saved Formulas</SelectLabel>
+                    {savedFormulas.map((saved) => (
+                      <SelectItem key={saved.id} value={`${SAVED_FORMULA_PREFIX}${saved.id}`}>
+                        <Sigma className="mr-1 inline size-3.5 text-brand-yellow" />
+                        {saved.name}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                )}
               </SelectContent>
             </Select>
           </div>
@@ -174,6 +214,13 @@ export function MappingRow({
               value={rule.formula ?? ""}
               columns={uploadColumns}
               onChange={(formula) => onChange({ ...rule, formula })}
+            />
+          </div>
+          <div className="mt-2">
+            <SaveFormulaDialog
+              formula={rule.formula ?? ""}
+              isSaving={Boolean(isSavingFormula)}
+              onSave={onSaveFormula}
             />
           </div>
         </div>

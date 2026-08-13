@@ -1,6 +1,7 @@
 import type {
   GenerateError,
   MappingRule,
+  SavedFormula,
   TemplateDetail,
   TemplateSummary,
   UploadResponse,
@@ -39,12 +40,41 @@ async function getJson<T>(path: string): Promise<T> {
   return (await res.json()) as T;
 }
 
+async function postJson<T>(path: string, body: unknown): Promise<T> {
+  const res = await fetch(`${API_BASE_URL}${path}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) throw await toApiError(res);
+  return (await res.json()) as T;
+}
+
 export function listTemplates() {
   return getJson<TemplateSummary[]>("/api/templates");
 }
 
 export function getTemplate(templateId: string) {
   return getJson<TemplateDetail>(`/api/templates/${encodeURIComponent(templateId)}`);
+}
+
+export function listSavedFormulas() {
+  return getJson<SavedFormula[]>("/api/formulas");
+}
+
+export function createSavedFormula(payload: {
+  name: string;
+  formula: string;
+  description?: string;
+}) {
+  return postJson<SavedFormula>("/api/formulas", payload);
+}
+
+export async function deleteSavedFormula(formulaId: string): Promise<void> {
+  const res = await fetch(`${API_BASE_URL}/api/formulas/${encodeURIComponent(formulaId)}`, {
+    method: "DELETE",
+  });
+  if (!res.ok) throw await toApiError(res);
 }
 
 export async function uploadExcel(file: File): Promise<UploadResponse> {

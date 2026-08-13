@@ -18,6 +18,7 @@ import { useTemplate } from "@/hooks/useTemplates";
 import { useGenerate } from "@/hooks/useGenerate";
 import { useMappingValidation } from "@/hooks/useMappingValidation";
 import { useHydrated } from "@/hooks/useHydrated";
+import { useSavedFormulas, useCreateSavedFormula } from "@/hooks/useFormulas";
 import { useWizardStore } from "@/store/wizard";
 import { ApiError, triggerBlobDownload } from "@/api/client";
 import type { GenerateError, MappingRule } from "@/types";
@@ -28,6 +29,8 @@ export function Mapping() {
   const hydrated = useHydrated();
   const template = useTemplate(templateId);
   const generate = useGenerate();
+  const savedFormulas = useSavedFormulas();
+  const createSavedFormula = useCreateSavedFormula();
   const upload = useWizardStore((s) => s.upload);
   const mappings = useWizardStore((s) => s.mappings);
   const setMappings = useWizardStore((s) => s.setMappings);
@@ -170,6 +173,17 @@ export function Mapping() {
             uploadColumns={uploadColumns}
             required={requiredColumns.includes(rule.destination)}
             errors={validation.rowErrors[rule.destination] ?? []}
+            savedFormulas={savedFormulas.data ?? []}
+            isSavingFormula={createSavedFormula.isPending}
+            onSaveFormula={(name, description) =>
+              createSavedFormula.mutate(
+                { name, formula: rule.formula ?? "", description: description || undefined },
+                {
+                  onSuccess: () => toast.success(`Saved "${name}" to your formula library`),
+                  onError: (error) => toast.error(error.message),
+                },
+              )
+            }
             onChange={(next) =>
               setMappings(mappings.map((m) => (m.destination === next.destination ? next : m)))
             }

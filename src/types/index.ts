@@ -56,3 +56,10 @@ export interface GenerateError {
   destination: string;
   message: string;
 }
+
+export interface SavedFormula {
+  id: string;
+  name: string;
+  formula: string;
+  description?: string | null | undefined;
+}
