@@ -77,9 +77,10 @@ export async function deleteSavedFormula(formulaId: string): Promise<void> {
   if (!res.ok) throw await toApiError(res);
 }
 
-export async function uploadExcel(file: File): Promise<UploadResponse> {
+export async function uploadExcel(file: File, headerRow = 1): Promise<UploadResponse> {
   const form = new FormData();
   form.append("file", file);
+  form.append("header_row", String(headerRow));
   const res = await fetch(`${API_BASE_URL}/api/upload`, { method: "POST", body: form });
   if (!res.ok) throw await toApiError(res);
   return (await res.json()) as UploadResponse;

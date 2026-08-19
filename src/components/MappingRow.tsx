@@ -2,6 +2,7 @@ import { AlertCircle, Sigma } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
   SelectContent,
@@ -14,13 +15,21 @@ import {
 import { SourceMultiSelect } from "./SourceMultiSelect";
 import { FormulaEditor } from "./FormulaEditor";
 import { SaveFormulaDialog } from "./SaveFormulaDialog";
-import { OPERATIONS, type MappingRule, type Operation, type SavedFormula } from "@/types";
+import { CellPickerDialog } from "./CellPickerDialog";
+import {
+  OPERATIONS,
+  type ConcatenateFormat,
+  type MappingRule,
+  type Operation,
+  type SavedFormula,
+} from "@/types";
 
 const SAVED_FORMULA_PREFIX = "saved:";
 
 export function MappingRow({
   rule,
   uploadColumns,
+  sampleRows,
   required,
   errors,
   savedFormulas,
@@ -30,6 +39,7 @@ export function MappingRow({
 }: {
   rule: MappingRule;
   uploadColumns: string[];
+  sampleRows: Record<string, unknown>[];
   required: boolean;
   errors: string[];
   savedFormulas: SavedFormula[];
@@ -40,6 +50,14 @@ export function MappingRow({
   const options = rule.options ?? {};
   const setOption = (key: string, value: string) =>
     onChange({ ...rule, options: { ...options, [key]: value } });
+  const formats = ((options["formats"] as ConcatenateFormat[] | undefined) ?? []).slice();
+  const setFormatAt = (index: number, patch: Partial<ConcatenateFormat>) => {
+    const next = rule.sources.map((_, i) => ({
+      ...(formats[i] ?? {}),
+      ...(i === index ? patch : {}),
+    }));
+    onChange({ ...rule, options: { ...options, formats: next } });
+  };
 
   const isConstant = rule.operation === "constant";
 
@@ -115,7 +133,12 @@ export function MappingRow({
                             }
                           : operation === "constant"
                             ? { value: (options["value"] as string) ?? "" }
-                            : {},
+                            : operation === "append_text"
+                              ? {
+                                  prefix: (options["prefix"] as string) ?? "",
+                                  suffix: (options["suffix"] as string) ?? "",
+                                }
+                              : {},
                 });
               }}
             >
@@ -149,13 +172,53 @@ export function MappingRow({
       </div>
 
       {rule.operation === "concatenate" && (
-        <div className="mt-4 max-w-xs">
-          <Label className="text-xs uppercase tracking-wide text-muted-foreground">Separator</Label>
-          <Input
-            className="mt-1.5"
-            value={(options["separator"] as string) ?? " "}
-            onChange={(e) => setOption("separator", e.target.value)}
-          />
+        <div className="mt-4 space-y-3">
+          <div className="max-w-xs">
+            <Label className="text-xs uppercase tracking-wide text-muted-foreground">
+              Separator
+            </Label>
+            <Input
+              className="mt-1.5"
+              value={(options["separator"] as string) ?? " "}
+              onChange={(e) => setOption("separator", e.target.value)}
+            />
+          </div>
+          {rule.sources.length > 0 && (
+            <div className="space-y-2 rounded-md border border-border p-3">
+              <Label className="text-xs uppercase tracking-wide text-muted-foreground">
+                Per-source formatting (optional)
+              </Label>
+              {rule.sources.map((source, i) => (
+                <div
+                  key={source}
+                  className="grid items-center gap-2 sm:grid-cols-[1fr_1fr_1fr_auto]"
+                >
+                  <span className="truncate text-xs font-medium text-muted-foreground">
+                    {source}
+                  </span>
+                  <Input
+                    placeholder="Prefix"
+                    value={formats[i]?.prefix ?? ""}
+                    onChange={(e) => setFormatAt(i, { prefix: e.target.value })}
+                  />
+                  <Input
+                    placeholder="Suffix"
+                    value={formats[i]?.suffix ?? ""}
+                    onChange={(e) => setFormatAt(i, { suffix: e.target.value })}
+                  />
+                  <label className="flex items-center gap-1.5 text-xs whitespace-nowrap">
+                    <Checkbox
+                      checked={Boolean(formats[i]?.duration_format)}
+                      onCheckedChange={(checked) =>
+                        setFormatAt(i, { duration_format: Boolean(checked) })
+                      }
+                    />
+                    HH:MM
+                  </label>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
 
@@ -194,14 +257,48 @@ export function MappingRow({
       )}
 
       {isConstant && (
-        <div className="mt-4 max-w-xs">
+        <div className="mt-4 max-w-md space-y-2">
           <Label className="text-xs uppercase tracking-wide text-muted-foreground">Value</Label>
-          <Input
-            className="mt-1.5"
-            value={(options["value"] as string) ?? ""}
-            onChange={(e) => setOption("value", e.target.value)}
-          />
+          <div className="flex items-center gap-2">
+            <Input
+              value={(options["value"] as string) ?? ""}
+              onChange={(e) => setOption("value", e.target.value)}
+            />
+            <CellPickerDialog
+              columns={uploadColumns}
+              rows={sampleRows}
+              onPick={(value) => setOption("value", value)}
+            />
+          </div>
         </div>
+      )}
+
+      {rule.operation === "append_text" && (
+        <div className="mt-4 grid max-w-lg gap-4 sm:grid-cols-2">
+          <div>
+            <Label className="text-xs uppercase tracking-wide text-muted-foreground">Prefix</Label>
+            <Input
+              className="mt-1.5"
+              value={(options["prefix"] as string) ?? ""}
+              onChange={(e) => setOption("prefix", e.target.value)}
+            />
+          </div>
+          <div>
+            <Label className="text-xs uppercase tracking-wide text-muted-foreground">Suffix</Label>
+            <Input
+              className="mt-1.5"
+              placeholder='e.g. " FH" or " FC"'
+              value={(options["suffix"] as string) ?? ""}
+              onChange={(e) => setOption("suffix", e.target.value)}
+            />
+          </div>
+        </div>
+      )}
+
+      {rule.operation === "duration_format" && (
+        <p className="mt-4 text-xs text-muted-foreground">
+          Converts a numeric hours value (e.g. 12530) into H:MM format (e.g. 12530:00).
+        </p>
       )}
 
       {rule.operation === "formula" && (

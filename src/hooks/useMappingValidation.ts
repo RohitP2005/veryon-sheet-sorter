@@ -24,23 +24,18 @@ export function useMappingValidation(
     for (const rule of mappings) {
       const errors: string[] = [];
       const opts = rule.options ?? {};
-      const isRequired = requiredColumns.includes(rule.destination);
 
       if (seen.has(rule.destination)) {
         globalErrors.push(`Duplicate destination column "${rule.destination}".`);
       }
       seen.add(rule.destination);
 
+      // A customer file not having a column for some destination (even a "required" one) must
+      // not block generation - it's just left blank in the output. Only genuine configuration
+      // mistakes (empty formula, unknown placeholder, etc.) are flagged here.
       switch (rule.operation) {
         case "constant":
           if (!String(opts["value"] ?? "").length) errors.push("Constant value is required.");
-          break;
-        case "concatenate":
-          if (rule.sources.length < 2)
-            errors.push("Concatenate requires at least 2 source columns.");
-          break;
-        case "multiply":
-          if (rule.sources.length < 1) errors.push("Multiply requires at least 1 source column.");
           break;
         case "formula": {
           const formula = (rule.formula ?? "").trim();
@@ -57,29 +52,15 @@ export function useMappingValidation(
         }
         case "replace":
           if (!String(opts["find"] ?? "").length) errors.push('"Find" value is required.');
-          if (rule.sources.length < 1) errors.push("Select at least 1 source column.");
           break;
         case "date_format":
           if (!String(opts["format"] ?? "").length) errors.push("Date format is required.");
-          if (rule.sources.length < 1) errors.push("Select at least 1 source column.");
           break;
         default:
-          if (isRequired && rule.sources.length < 1)
-            errors.push("Select at least 1 source column.");
           break;
-      }
-
-      if (isRequired && rule.operation !== "constant" && rule.sources.length < 1) {
-        if (!errors.includes("Select at least 1 source column."))
-          errors.push("This column is required — select at least 1 source column.");
       }
 
       if (errors.length) rowErrors[rule.destination] = errors;
-    }
-
-    for (const required of requiredColumns) {
-      const rule = mappings.find((m) => m.destination === required);
-      if (!rule) globalErrors.push(`Required column "${required}" has no mapping.`);
     }
 
     return {
@@ -87,5 +68,5 @@ export function useMappingValidation(
       globalErrors,
       isValid: Object.keys(rowErrors).length === 0 && globalErrors.length === 0,
     };
-  }, [mappings, uploadColumns, requiredColumns]);
+  }, [mappings, uploadColumns]);
 }

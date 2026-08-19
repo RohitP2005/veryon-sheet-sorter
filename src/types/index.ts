@@ -8,7 +8,9 @@ export type Operation =
   | "formula"
   | "replace"
   | "date_format"
-  | "constant";
+  | "constant"
+  | "append_text"
+  | "duration_format";
 
 export const OPERATIONS: Operation[] = [
   "copy",
@@ -21,7 +23,15 @@ export const OPERATIONS: Operation[] = [
   "replace",
   "date_format",
   "constant",
+  "append_text",
+  "duration_format",
 ];
+
+export interface ConcatenateFormat {
+  prefix?: string;
+  suffix?: string;
+  duration_format?: boolean;
+}
 
 export interface MappingRule {
   destination: string;
@@ -50,6 +60,7 @@ export interface UploadResponse {
   columns: string[];
   sample_rows: Record<string, unknown>[];
   row_count: number;
+  header_row: number;
 }
 
 export interface GenerateError {

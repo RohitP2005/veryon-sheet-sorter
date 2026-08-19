@@ -6,6 +6,8 @@ import { UploadBox } from "@/components/UploadBox";
 import { PreviewGrid } from "@/components/PreviewGrid";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useTemplate } from "@/hooks/useTemplates";
 import { useUpload, validateExcelFile } from "@/hooks/useUpload";
@@ -21,6 +23,7 @@ export function UploadExcel() {
   const setUpload = useWizardStore((s) => s.setUpload);
   const [localError, setLocalError] = useState<string | null>(null);
   const [result, setResult] = useState<UploadResponse | null>(null);
+  const [headerRow, setHeaderRow] = useState(1);
 
   function handleFile(file: File) {
     setLocalError(null);
@@ -30,12 +33,15 @@ export function UploadExcel() {
       setLocalError(invalid);
       return;
     }
-    upload.mutate(file, {
-      onSuccess: (data) => {
-        setResult(data);
-        setUpload(data);
+    upload.mutate(
+      { file, headerRow },
+      {
+        onSuccess: (data) => {
+          setResult(data);
+          setUpload(data);
+        },
       },
-    });
+    );
   }
 
   const apiError = upload.error?.message ?? null;
@@ -59,6 +65,22 @@ export function UploadExcel() {
 
       <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_320px]">
         <div className="space-y-4">
+          <div className="max-w-xs">
+            <Label className="text-xs uppercase tracking-wide text-muted-foreground">
+              Header row
+            </Label>
+            <Input
+              className="mt-1.5"
+              type="number"
+              min={1}
+              value={headerRow}
+              onChange={(e) => setHeaderRow(Math.max(1, Number(e.target.value) || 1))}
+            />
+            <p className="mt-1 text-xs text-muted-foreground">
+              Which row has the real column headers? Use this if the file starts with a title or
+              logo row before the headers.
+            </p>
+          </div>
           <UploadBox onFile={handleFile} isUploading={upload.isPending} />
           {(localError || apiError) && (
             <div className="flex items-start gap-2 rounded-md border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive">

@@ -171,6 +171,7 @@ export function Mapping() {
             key={rule.destination}
             rule={rule}
             uploadColumns={uploadColumns}
+            sampleRows={upload.sample_rows}
             required={requiredColumns.includes(rule.destination)}
             errors={validation.rowErrors[rule.destination] ?? []}
             savedFormulas={savedFormulas.data ?? []}
