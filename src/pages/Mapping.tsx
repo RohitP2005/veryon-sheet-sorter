@@ -171,7 +171,8 @@ export function Mapping() {
             key={rule.destination}
             rule={rule}
             uploadColumns={uploadColumns}
-            sampleRows={upload.sample_rows}
+            gridColumns={upload.grid_columns}
+            gridRows={upload.grid_rows}
             required={requiredColumns.includes(rule.destination)}
             errors={validation.rowErrors[rule.destination] ?? []}
             savedFormulas={savedFormulas.data ?? []}

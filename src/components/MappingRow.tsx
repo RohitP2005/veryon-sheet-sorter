@@ -29,7 +29,8 @@ const SAVED_FORMULA_PREFIX = "saved:";
 export function MappingRow({
   rule,
   uploadColumns,
-  sampleRows,
+  gridColumns,
+  gridRows,
   required,
   errors,
   savedFormulas,
@@ -39,7 +40,8 @@ export function MappingRow({
 }: {
   rule: MappingRule;
   uploadColumns: string[];
-  sampleRows: Record<string, unknown>[];
+  gridColumns: string[];
+  gridRows: unknown[][];
   required: boolean;
   errors: string[];
   savedFormulas: SavedFormula[];
@@ -271,8 +273,8 @@ export function MappingRow({
               onChange={(e) => setOption("value", e.target.value)}
             />
             <CellPickerDialog
-              columns={uploadColumns}
-              rows={sampleRows}
+              columns={gridColumns}
+              rows={gridRows}
               onPick={(value) => setOption("value", value)}
             />
           </div>
