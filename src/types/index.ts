@@ -10,7 +10,8 @@ export type Operation =
   | "date_format"
   | "constant"
   | "append_text"
-  | "duration_format";
+  | "duration_format"
+  | "duration_pair_merge";
 
 export const OPERATIONS: Operation[] = [
   "copy",
@@ -25,6 +26,7 @@ export const OPERATIONS: Operation[] = [
   "constant",
   "append_text",
   "duration_format",
+  "duration_pair_merge",
 ];
 
 export interface ConcatenateFormat {

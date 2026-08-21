@@ -138,7 +138,13 @@ export function MappingRow({
                                   prefix: (options["prefix"] as string) ?? "",
                                   suffix: (options["suffix"] as string) ?? "",
                                 }
-                              : {},
+                              : operation === "duration_pair_merge"
+                                ? {
+                                    separator: (options["separator"] as string) ?? ", ",
+                                    first_suffix: (options["first_suffix"] as string) ?? " FH",
+                                    second_suffix: (options["second_suffix"] as string) ?? " FC",
+                                  }
+                                : {},
                 });
               }}
             >
@@ -299,6 +305,47 @@ export function MappingRow({
         <p className="mt-4 text-xs text-muted-foreground">
           Converts a numeric hours value (e.g. 12530) into H:MM format (e.g. 12530:00).
         </p>
+      )}
+
+      {rule.operation === "duration_pair_merge" && (
+        <div className="mt-4 space-y-3">
+          <p className="text-xs text-muted-foreground">
+            Select 2 source columns above: 1st = TSN/hours value (formatted to H:MM), 2nd = CSN/
+            cycles value. Example: TSN 12530 + CSN 4321 → <code>12530:00 FH, 4321 FC</code>
+          </p>
+          <div className="grid max-w-xl gap-4 sm:grid-cols-3">
+            <div>
+              <Label className="text-xs uppercase tracking-wide text-muted-foreground">
+                1st value suffix
+              </Label>
+              <Input
+                className="mt-1.5"
+                value={(options["first_suffix"] as string) ?? " FH"}
+                onChange={(e) => setOption("first_suffix", e.target.value)}
+              />
+            </div>
+            <div>
+              <Label className="text-xs uppercase tracking-wide text-muted-foreground">
+                2nd value suffix
+              </Label>
+              <Input
+                className="mt-1.5"
+                value={(options["second_suffix"] as string) ?? " FC"}
+                onChange={(e) => setOption("second_suffix", e.target.value)}
+              />
+            </div>
+            <div>
+              <Label className="text-xs uppercase tracking-wide text-muted-foreground">
+                Separator
+              </Label>
+              <Input
+                className="mt-1.5"
+                value={(options["separator"] as string) ?? ", "}
+                onChange={(e) => setOption("separator", e.target.value)}
+              />
+            </div>
+          </div>
+        </div>
       )}
 
       {rule.operation === "formula" && (
