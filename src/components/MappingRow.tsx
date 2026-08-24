@@ -139,6 +139,7 @@ export function MappingRow({
                               ? {
                                   prefix: (options["prefix"] as string) ?? "",
                                   suffix: (options["suffix"] as string) ?? "",
+                                  separator: (options["separator"] as string) ?? "",
                                 }
                               : operation === "duration_pair_merge"
                                 ? {
@@ -282,23 +283,40 @@ export function MappingRow({
       )}
 
       {rule.operation === "append_text" && (
-        <div className="mt-4 grid max-w-lg gap-4 sm:grid-cols-2">
-          <div>
-            <Label className="text-xs uppercase tracking-wide text-muted-foreground">Prefix</Label>
-            <Input
-              className="mt-1.5"
-              value={(options["prefix"] as string) ?? ""}
-              onChange={(e) => setOption("prefix", e.target.value)}
-            />
-          </div>
-          <div>
-            <Label className="text-xs uppercase tracking-wide text-muted-foreground">Suffix</Label>
-            <Input
-              className="mt-1.5"
-              placeholder='e.g. " FH" or " FC"'
-              value={(options["suffix"] as string) ?? ""}
-              onChange={(e) => setOption("suffix", e.target.value)}
-            />
+        <div className="mt-4 space-y-3">
+          <div className="grid max-w-xl gap-4 sm:grid-cols-3">
+            <div>
+              <Label className="text-xs uppercase tracking-wide text-muted-foreground">
+                Prefix
+              </Label>
+              <Input
+                className="mt-1.5"
+                value={(options["prefix"] as string) ?? ""}
+                onChange={(e) => setOption("prefix", e.target.value)}
+              />
+            </div>
+            <div>
+              <Label className="text-xs uppercase tracking-wide text-muted-foreground">
+                Suffix
+              </Label>
+              <Input
+                className="mt-1.5"
+                placeholder='e.g. " FH" or " FC"'
+                value={(options["suffix"] as string) ?? ""}
+                onChange={(e) => setOption("suffix", e.target.value)}
+              />
+            </div>
+            <div>
+              <Label className="text-xs uppercase tracking-wide text-muted-foreground">
+                Separator
+              </Label>
+              <Input
+                className="mt-1.5"
+                placeholder="Used when multiple source columns are selected"
+                value={(options["separator"] as string) ?? ""}
+                onChange={(e) => setOption("separator", e.target.value)}
+              />
+            </div>
           </div>
         </div>
       )}
