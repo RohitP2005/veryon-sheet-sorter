@@ -15,8 +15,15 @@ export function validateExcelFile(file: File): string | null {
 
 export function useUpload() {
   return useMutation({
-    mutationFn: ({ file, headerRow }: { file: File; headerRow: number }) =>
-      uploadExcel(file, headerRow),
+    mutationFn: ({
+      file,
+      headerRow,
+      headerRowStart,
+    }: {
+      file: File;
+      headerRow: number;
+      headerRowStart?: number | undefined;
+    }) => uploadExcel(file, headerRow, headerRowStart),
     retry: false,
   });
 }

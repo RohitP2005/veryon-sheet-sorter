@@ -63,6 +63,7 @@ export interface UploadResponse {
   sample_rows: Record<string, unknown>[];
   row_count: number;
   header_row: number;
+  header_row_start: number | null;
   grid_columns: string[];
   grid_rows: unknown[][];
 }

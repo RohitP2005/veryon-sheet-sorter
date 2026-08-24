@@ -24,6 +24,7 @@ export function UploadExcel() {
   const [localError, setLocalError] = useState<string | null>(null);
   const [result, setResult] = useState<UploadResponse | null>(null);
   const [headerRow, setHeaderRow] = useState(1);
+  const [headerRowStart, setHeaderRowStart] = useState<number | undefined>(undefined);
 
   function handleFile(file: File) {
     setLocalError(null);
@@ -33,8 +34,12 @@ export function UploadExcel() {
       setLocalError(invalid);
       return;
     }
+    if (headerRowStart !== undefined && headerRowStart > headerRow) {
+      setLocalError("Higher-order header start row must be less than or equal to the header row.");
+      return;
+    }
     upload.mutate(
-      { file, headerRow },
+      { file, headerRow, headerRowStart },
       {
         onSuccess: (data) => {
           setResult(data);
@@ -65,21 +70,41 @@ export function UploadExcel() {
 
       <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_320px]">
         <div className="space-y-4">
-          <div className="max-w-xs">
-            <Label className="text-xs uppercase tracking-wide text-muted-foreground">
-              Header row
-            </Label>
-            <Input
-              className="mt-1.5"
-              type="number"
-              min={1}
-              value={headerRow}
-              onChange={(e) => setHeaderRow(Math.max(1, Number(e.target.value) || 1))}
-            />
-            <p className="mt-1 text-xs text-muted-foreground">
-              Which row has the real column headers? Use this if the file starts with a title or
-              logo row before the headers.
-            </p>
+          <div className="grid max-w-md gap-4 sm:grid-cols-2">
+            <div>
+              <Label className="text-xs uppercase tracking-wide text-muted-foreground">
+                Header row
+              </Label>
+              <Input
+                className="mt-1.5"
+                type="number"
+                min={1}
+                value={headerRow}
+                onChange={(e) => setHeaderRow(Math.max(1, Number(e.target.value) || 1))}
+              />
+              <p className="mt-1 text-xs text-muted-foreground">
+                Which row has the real column headers? Use this if the file starts with a title
+                or logo row before the headers.
+              </p>
+            </div>
+            <div>
+              <Label className="text-xs uppercase tracking-wide text-muted-foreground">
+                Higher-order header start row (optional)
+              </Label>
+              <Input
+                className="mt-1.5"
+                type="number"
+                min={1}
+                value={headerRowStart ?? ""}
+                onChange={(e) =>
+                  setHeaderRowStart(e.target.value ? Math.max(1, Number(e.target.value)) : undefined)
+                }
+              />
+              <p className="mt-1 text-xs text-muted-foreground">
+                If grouping headers sit above the header row (e.g. "Engine 1" spanning "TSN"/
+                "TSO"), enter the row they start on. Columns will show as "Engine 1 -&gt; TSN".
+              </p>
+            </div>
           </div>
           <UploadBox onFile={handleFile} isUploading={upload.isPending} />
           {(localError || apiError) && (
