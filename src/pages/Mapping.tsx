@@ -18,6 +18,7 @@ import { useTemplate } from "@/hooks/useTemplates";
 import { useGenerate } from "@/hooks/useGenerate";
 import { useMappingValidation } from "@/hooks/useMappingValidation";
 import { useHydrated } from "@/hooks/useHydrated";
+import { useUploadExists } from "@/hooks/useUpload";
 import { useSavedFormulas, useCreateSavedFormula } from "@/hooks/useFormulas";
 import { useWizardStore } from "@/store/wizard";
 import { ApiError, triggerBlobDownload } from "@/api/client";
@@ -32,6 +33,7 @@ export function Mapping() {
   const savedFormulas = useSavedFormulas();
   const createSavedFormula = useCreateSavedFormula();
   const upload = useWizardStore((s) => s.upload);
+  const uploadExists = useUploadExists(upload?.upload_id);
   const mappings = useWizardStore((s) => s.mappings);
   const setMappings = useWizardStore((s) => s.setMappings);
   const setJob = useWizardStore((s) => s.setJob);
@@ -105,7 +107,7 @@ export function Mapping() {
     );
   }
 
-  if (!hydrated || template.isPending) {
+  if (!hydrated || template.isPending || (upload && uploadExists.isPending)) {
     return (
       <WizardLayout step={3}>
         <div className="space-y-4">
@@ -117,13 +119,15 @@ export function Mapping() {
     );
   }
 
-  if (!upload) {
+  if (!upload || uploadExists.data === false) {
     return (
       <WizardLayout step={3}>
         <Card className="p-6">
           <h1 className="text-lg font-bold">Upload data missing</h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            We couldn't find your uploaded workbook in this session. Please upload it again.
+            {upload
+              ? "This upload is no longer available on the server (uploads aren't kept between server restarts). Please upload the file again."
+              : "We couldn't find your uploaded workbook in this session. Please upload it again."}
           </p>
           <Button asChild variant="cta" className="mt-4">
             <Link to="/upload/$templateId" params={{ templateId }}>

@@ -1,5 +1,5 @@
-import { useMutation } from "@tanstack/react-query";
-import { uploadExcel } from "@/api/client";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { checkUploadExists, uploadExcel } from "@/api/client";
 
 export const MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
 
@@ -25,5 +25,19 @@ export function useUpload() {
       headerRowStart?: number | undefined;
     }) => uploadExcel(file, headerRow, headerRowStart),
     retry: false,
+  });
+}
+
+/** Verifies a previously-uploaded file's upload_id is still known to the server. Uploads live
+ * only in server memory (no persistence) - a session left open across a backend restart would
+ * otherwise only discover its upload_id is stale after filling out the whole mapping form and
+ * clicking Generate. */
+export function useUploadExists(uploadId: string | undefined) {
+  return useQuery({
+    queryKey: ["upload-exists", uploadId],
+    queryFn: () => checkUploadExists(uploadId as string),
+    enabled: Boolean(uploadId),
+    retry: false,
+    staleTime: 0,
   });
 }

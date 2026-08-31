@@ -93,6 +93,13 @@ export async function uploadExcel(
   return (await res.json()) as UploadResponse;
 }
 
+export async function checkUploadExists(uploadId: string): Promise<boolean> {
+  const { exists } = await getJson<{ exists: boolean }>(
+    `/api/upload/${encodeURIComponent(uploadId)}/exists`,
+  );
+  return exists;
+}
+
 export interface GenerateBody {
   template_id: string;
   upload_id: string;

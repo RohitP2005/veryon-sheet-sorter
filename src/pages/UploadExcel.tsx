@@ -23,10 +23,14 @@ export function UploadExcel() {
   const setUpload = useWizardStore((s) => s.setUpload);
   const [localError, setLocalError] = useState<string | null>(null);
   const [result, setResult] = useState<UploadResponse | null>(null);
-  const [headerRow, setHeaderRow] = useState(1);
+  const [headerRow, setHeaderRow] = useState<number | "">(1);
   const [headerRowStart, setHeaderRowStart] = useState<number | undefined>(undefined);
 
   function handleFile(file: File) {
+    if (headerRow === "") {
+      setLocalError("Cannot select file: header row cannot be empty.");
+      return;
+    }
     setLocalError(null);
     upload.reset();
     const invalid = validateExcelFile(file);
@@ -79,8 +83,17 @@ export function UploadExcel() {
                 className="mt-1.5"
                 type="number"
                 min={1}
+                placeholder="e.g. 1"
                 value={headerRow}
-                onChange={(e) => setHeaderRow(Math.max(1, Number(e.target.value) || 1))}
+                onChange={(e) => {
+                  const raw = e.target.value;
+                  if (raw === "") {
+                    setHeaderRow("");
+                    return;
+                  }
+                  const parsed = Number(raw);
+                  setHeaderRow(Number.isFinite(parsed) ? Math.max(1, parsed) : headerRow);
+                }}
               />
               <p className="mt-1 text-xs text-muted-foreground">
                 Which row has the real column headers? Use this if the file starts with a title
