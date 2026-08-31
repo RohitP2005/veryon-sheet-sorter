@@ -373,6 +373,12 @@ export function MappingRow({
           <Label className="text-xs uppercase tracking-wide text-muted-foreground">
             Formula — use {"{{"}ColumnName{"}}"} placeholders
           </Label>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Arithmetic (+ − × ÷ %, and ^ for power) plus Excel-style functions: IF, IFERROR, AND,
+            OR, NOT, ROUND/ROUNDUP/ROUNDDOWN, ABS, MIN, MAX, SUM, AVERAGE, MOD, SQRT, POWER,
+            CONCATENATE, LEFT, RIGHT, MID, LEN, UPPER, LOWER, TRIM, SUBSTITUTE. E.g.{" "}
+            <code>IF({"{{"}Qty{"}}"}=0, 0, {"{{"}Total{"}}"}/{"{{"}Qty{"}}"})</code>.
+          </p>
           <div className="mt-1.5">
             <FormulaEditor
               value={rule.formula ?? ""}
