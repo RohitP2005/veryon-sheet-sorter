@@ -36,7 +36,7 @@ export function SourceMultiSelect({
             <ChevronDown className="size-4 opacity-60" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent align="start" className="max-h-64 w-64 overflow-y-auto p-1">
+        <PopoverContent align="start" className="max-h-64 w-96 max-w-[90vw] overflow-y-auto p-1">
           {options.length === 0 && (
             <p className="p-2 text-sm text-muted-foreground">No columns detected</p>
           )}
@@ -48,12 +48,12 @@ export function SourceMultiSelect({
                 key={option}
                 onClick={() => toggle(option)}
                 className={cn(
-                  "flex w-full items-center justify-between gap-2 rounded-sm px-2 py-1.5 text-left text-sm hover:bg-secondary",
+                  "flex w-full items-start justify-between gap-2 rounded-sm px-2 py-1.5 text-left text-sm hover:bg-secondary",
                   active && "font-medium",
                 )}
               >
-                <span className="truncate">{option}</span>
-                {active && <Check className="size-4 text-brand-yellow-dark" />}
+                <span className="whitespace-normal break-words">{option}</span>
+                {active && <Check className="mt-0.5 size-4 shrink-0 text-brand-yellow-dark" />}
               </button>
             );
           })}
