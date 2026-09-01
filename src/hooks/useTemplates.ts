@@ -1,5 +1,5 @@
-import { queryOptions, useQuery } from "@tanstack/react-query";
-import { getTemplate, listTemplates } from "@/api/client";
+import { queryOptions, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { createTemplate, getTemplate, listTemplates } from "@/api/client";
 
 export const templatesQueryOptions = () =>
   queryOptions({ queryKey: ["templates"], queryFn: listTemplates });
@@ -17,4 +17,12 @@ export function useTemplates() {
 
 export function useTemplate(templateId: string) {
   return useQuery(templateQueryOptions(templateId));
+}
+
+export function useCreateTemplate() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: createTemplate,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["templates"] }),
+  });
 }

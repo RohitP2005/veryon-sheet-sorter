@@ -1,16 +1,19 @@
 import { useNavigate } from "@tanstack/react-router";
 import { AlertCircle } from "lucide-react";
+import { toast } from "sonner";
 import { WizardLayout } from "@/components/AppHeader";
 import { TemplateCard } from "@/components/TemplateCard";
+import { AddTemplateDialog } from "@/components/AddTemplateDialog";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
-import { useTemplates } from "@/hooks/useTemplates";
+import { useTemplates, useCreateTemplate } from "@/hooks/useTemplates";
 import { useWizardStore } from "@/store/wizard";
 import type { TemplateSummary } from "@/types";
 
 export function ChooseTemplate() {
   const navigate = useNavigate();
   const { data, isPending, isError, error, refetch } = useTemplates();
+  const createTemplate = useCreateTemplate();
   const selectTemplate = useWizardStore((s) => s.selectTemplate);
 
   function onSelect(template: TemplateSummary) {
@@ -20,10 +23,26 @@ export function ChooseTemplate() {
 
   return (
     <WizardLayout step={1}>
-      <h1 className="text-3xl font-extrabold tracking-tight">Choose a template</h1>
-      <p className="mt-2 max-w-2xl text-muted-foreground">
-        Pick the output template your customer workbook should be transformed into.
-      </p>
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-extrabold tracking-tight">Choose a template</h1>
+          <p className="mt-2 max-w-2xl text-muted-foreground">
+            Pick the output template your customer workbook should be transformed into.
+          </p>
+        </div>
+        <AddTemplateDialog
+          isSaving={createTemplate.isPending}
+          onCreate={(input) =>
+            createTemplate.mutate(input, {
+              onSuccess: (template) => {
+                toast.success(`Added template "${template.name}"`);
+                onSelect(template);
+              },
+              onError: (err) => toast.error(err.message),
+            })
+          }
+        />
+      </div>
 
       {isPending && (
         <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

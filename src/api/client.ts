@@ -58,6 +58,24 @@ export function getTemplate(templateId: string) {
   return getJson<TemplateDetail>(`/api/templates/${encodeURIComponent(templateId)}`);
 }
 
+export async function createTemplate(payload: {
+  file: File;
+  name: string;
+  description?: string;
+  sheetName?: string;
+  headerRow?: number;
+}): Promise<TemplateDetail> {
+  const form = new FormData();
+  form.append("file", payload.file);
+  form.append("name", payload.name);
+  if (payload.description) form.append("description", payload.description);
+  if (payload.sheetName) form.append("sheet_name", payload.sheetName);
+  form.append("header_row", String(payload.headerRow ?? 1));
+  const res = await fetch(`${API_BASE_URL}/api/templates`, { method: "POST", body: form });
+  if (!res.ok) throw await toApiError(res);
+  return (await res.json()) as TemplateDetail;
+}
+
 export function listSavedFormulas() {
   return getJson<SavedFormula[]>("/api/formulas");
 }
