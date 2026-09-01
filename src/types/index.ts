@@ -8,6 +8,7 @@ export type Operation =
   | "formula"
   | "replace"
   | "date_format"
+  | "date_standardize"
   | "constant"
   | "append_text"
   | "duration_format"
@@ -24,6 +25,7 @@ export const OPERATIONS: Operation[] = [
   "formula",
   "replace",
   "date_format",
+  "date_standardize",
   "constant",
   "append_text",
   "duration_format",

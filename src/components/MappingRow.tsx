@@ -151,6 +151,7 @@ export function MappingRow({
                                   ? {
                                       length: (options["length"] as number) ?? 0,
                                       trim: (options["trim"] as boolean) ?? true,
+                                      retain: (options["retain"] as boolean) ?? true,
                                     }
                                   : {},
                 });
@@ -270,6 +271,14 @@ export function MappingRow({
         </div>
       )}
 
+      {rule.operation === "date_standardize" && (
+        <p className="mt-4 text-xs text-muted-foreground">
+          Parses the date regardless of its original format (<code>dd/mm/yyyy</code>,{" "}
+          <code>yyyy-mm-dd</code>, an Excel date, etc.) and always outputs <code>dd-Mon-yyyy</code>{" "}
+          — e.g. <code>13/04/2005</code> → <code>13-Apr-2005</code>. No options needed.
+        </p>
+      )}
+
       {isConstant && (
         <div className="mt-4 max-w-md space-y-2">
           <Label className="text-xs uppercase tracking-wide text-muted-foreground">Value</Label>
@@ -376,9 +385,12 @@ export function MappingRow({
       {rule.operation === "slice" && (
         <div className="mt-4 space-y-3">
           <p className="text-xs text-muted-foreground">
-            Trims whitespace, then slices the value: a positive length takes that many characters
-            from the start, a negative length takes that many from the end. Example: length 3 on{" "}
-            <code>"ABC12345"</code> → <code>"ABC"</code>; length -4 → <code>"2345"</code>
+            Trims whitespace, then slices the value: a positive length counts from the start, a
+            negative length counts from the end. With "Retain" checked, that many characters are{" "}
+            <strong>kept</strong> (length 3 on <code>"ABC12345"</code> → <code>"ABC"</code>; length
+            -4 → <code>"2345"</code>). With it unchecked, that many are{" "}
+            <strong>removed instead</strong>, keeping the rest (length 4 → <code>"2345"</code>;
+            length -4 → <code>"ABC1"</code>).
           </p>
           <div className="flex flex-wrap items-end gap-4">
             <div className="max-w-[10rem]">
@@ -406,6 +418,15 @@ export function MappingRow({
                 }
               />
               Trim whitespace before slicing
+            </label>
+            <label className="flex items-center gap-1.5 pb-2 text-xs whitespace-nowrap">
+              <Checkbox
+                checked={(options["retain"] as boolean) ?? true}
+                onCheckedChange={(checked) =>
+                  onChange({ ...rule, options: { ...options, retain: Boolean(checked) } })
+                }
+              />
+              Retain (keep, instead of remove)
             </label>
           </div>
         </div>
