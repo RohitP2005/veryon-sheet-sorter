@@ -62,7 +62,8 @@ export default function MonacoFormulaEditor({
           endLineNumber: position.lineNumber,
           endColumn: position.column,
         });
-        const insidePlaceholder = textBeforeCursor.lastIndexOf("{{") > textBeforeCursor.lastIndexOf("}}");
+        const insidePlaceholder =
+          textBeforeCursor.lastIndexOf("{{") > textBeforeCursor.lastIndexOf("}}");
 
         if (insidePlaceholder) {
           return {

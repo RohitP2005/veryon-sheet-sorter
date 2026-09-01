@@ -7,11 +7,11 @@ export function AppHeader({ step }: { step: 1 | 2 | 3 | 4 }) {
       <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4">
         <Link to="/templates" className="flex items-baseline gap-3">
           <span className="text-xl font-extrabold tracking-tight text-white">
-       <span className="text-brand-yellow">Veryon's</span>{" "}
+            <span className="text-brand-yellow">Veryon's</span>{" "}
             <span className="text-gray-300">DataBridge</span>
           </span>
           <span className="text-xs font-medium uppercase tracking-widest text-white/60">
-               Tracking +
+            Tracking +
           </span>
         </Link>
       </div>

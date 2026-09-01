@@ -96,8 +96,8 @@ export function UploadExcel() {
                 }}
               />
               <p className="mt-1 text-xs text-muted-foreground">
-                Which row has the real column headers? Use this if the file starts with a title
-                or logo row before the headers.
+                Which row has the real column headers? Use this if the file starts with a title or
+                logo row before the headers.
               </p>
             </div>
             <div>
@@ -110,7 +110,9 @@ export function UploadExcel() {
                 min={1}
                 value={headerRowStart ?? ""}
                 onChange={(e) =>
-                  setHeaderRowStart(e.target.value ? Math.max(1, Number(e.target.value)) : undefined)
+                  setHeaderRowStart(
+                    e.target.value ? Math.max(1, Number(e.target.value)) : undefined,
+                  )
                 }
               />
               <p className="mt-1 text-xs text-muted-foreground">

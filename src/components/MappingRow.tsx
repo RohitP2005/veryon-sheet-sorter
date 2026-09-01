@@ -147,7 +147,12 @@ export function MappingRow({
                                     first_suffix: (options["first_suffix"] as string) ?? " FH",
                                     second_suffix: (options["second_suffix"] as string) ?? " FC",
                                   }
-                                : {},
+                                : operation === "slice"
+                                  ? {
+                                      length: (options["length"] as number) ?? 0,
+                                      trim: (options["trim"] as boolean) ?? true,
+                                    }
+                                  : {},
                 });
               }}
             >
@@ -368,6 +373,44 @@ export function MappingRow({
         </div>
       )}
 
+      {rule.operation === "slice" && (
+        <div className="mt-4 space-y-3">
+          <p className="text-xs text-muted-foreground">
+            Trims whitespace, then slices the value: a positive length takes that many characters
+            from the start, a negative length takes that many from the end. Example: length 3 on{" "}
+            <code>"ABC12345"</code> → <code>"ABC"</code>; length -4 → <code>"2345"</code>
+          </p>
+          <div className="flex flex-wrap items-end gap-4">
+            <div className="max-w-[10rem]">
+              <Label className="text-xs uppercase tracking-wide text-muted-foreground">
+                Length
+              </Label>
+              <Input
+                className="mt-1.5"
+                type="number"
+                placeholder="e.g. 3 or -4"
+                value={(options["length"] as number | string) ?? 0}
+                onChange={(e) =>
+                  onChange({
+                    ...rule,
+                    options: { ...options, length: Number(e.target.value) || 0 },
+                  })
+                }
+              />
+            </div>
+            <label className="flex items-center gap-1.5 pb-2 text-xs whitespace-nowrap">
+              <Checkbox
+                checked={(options["trim"] as boolean) ?? true}
+                onCheckedChange={(checked) =>
+                  onChange({ ...rule, options: { ...options, trim: Boolean(checked) } })
+                }
+              />
+              Trim whitespace before slicing
+            </label>
+          </div>
+        </div>
+      )}
+
       {rule.operation === "formula" && (
         <div className="mt-4">
           <Label className="text-xs uppercase tracking-wide text-muted-foreground">
@@ -377,7 +420,10 @@ export function MappingRow({
             Arithmetic (+ − × ÷ %, and ^ for power) plus Excel-style functions: IF, IFERROR, AND,
             OR, NOT, ROUND/ROUNDUP/ROUNDDOWN, ABS, MIN, MAX, SUM, AVERAGE, MOD, SQRT, POWER,
             CONCATENATE, LEFT, RIGHT, MID, LEN, UPPER, LOWER, TRIM, SUBSTITUTE. E.g.{" "}
-            <code>IF({"{{"}Qty{"}}"}=0, 0, {"{{"}Total{"}}"}/{"{{"}Qty{"}}"})</code>.
+            <code>
+              IF({"{{"}Qty{"}}"}=0, 0, {"{{"}Total{"}}"}/{"{{"}Qty{"}}"})
+            </code>
+            .
           </p>
           <div className="mt-1.5">
             <FormulaEditor
